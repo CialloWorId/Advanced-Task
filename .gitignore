@@ -1,0 +1,43 @@
+# ===== EIDE =====
+/.eide*
+/.cmsis/
+/.pack/
+/*.code-workspace
+*.ept
+*.eide-template
+/RTE_Components.h
+.clang-format
+
+# ===== Keil MDK-ARM build output =====
+# 输出目录名=目标名，不固定，改用扩展名忽略
+/MDK-ARM/**/*.o
+/MDK-ARM/**/*.crf
+/MDK-ARM/**/*.d
+/MDK-ARM/**/*.axf
+/MDK-ARM/**/*.elf
+/MDK-ARM/**/*.hex
+/MDK-ARM/**/*.bin
+/MDK-ARM/**/*.map
+/MDK-ARM/**/*.lst
+/MDK-ARM/**/*.lnp
+/MDK-ARM/**/*.dep
+/MDK-ARM/**/*.sct
+/MDK-ARM/**/*.htm
+/MDK-ARM/**/*.build_log.*
+/MDK-ARM/**/*.uvguix.*
+/MDK-ARM/**/*.bak
+/MDK-ARM/**/*.iex
+/MDK-ARM/**/*.__i
+
+# ===== project out =====
+/build/
+/bin/
+/obj/
+/out/
+
+# ===== editor =====
+/.vscode/
+/.settings/
+
+# ===== cubemx =====
+/*.mxproject
