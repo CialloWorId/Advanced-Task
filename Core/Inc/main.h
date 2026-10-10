@@ -46,6 +46,7 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 extern osMessageQueueId_t UART_Receive_SizeHandle;
+extern osSemaphoreId_t I2C1_DMA_LockHandle;
 extern osSemaphoreId_t UART_DMA_LockHandle;
 /* USER CODE END EC */
 

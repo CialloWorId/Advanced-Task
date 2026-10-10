@@ -71,6 +71,11 @@ osSemaphoreId_t UART_DMA_LockHandle;
 const osSemaphoreAttr_t UART_DMA_Lock_attributes = {
   .name = "UART_DMA_Lock"
 };
+/* Definitions for I2C1_DMA_Lock */
+osSemaphoreId_t I2C1_DMA_LockHandle;
+const osSemaphoreAttr_t I2C1_DMA_Lock_attributes = {
+  .name = "I2C1_DMA_Lock"
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -99,6 +104,9 @@ void MX_FREERTOS_Init(void) {
   /* Create the semaphores(s) */
   /* creation of UART_DMA_Lock */
   UART_DMA_LockHandle = osSemaphoreNew(1, 1, &UART_DMA_Lock_attributes);
+
+  /* creation of I2C1_DMA_Lock */
+  I2C1_DMA_LockHandle = osSemaphoreNew(1, 1, &I2C1_DMA_Lock_attributes);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
