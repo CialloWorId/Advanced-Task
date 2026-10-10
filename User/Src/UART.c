@@ -31,7 +31,7 @@ void Task_UART_Send(void *argument)
                     ReceiveBufPointer = 0;
                 }
             }
-            HAL_UART_Transmit_DMA(&huart2, (uint8_t *)SendBuf, Size);
+            HAL_UART_Transmit_DMA(&huart1, (uint8_t *)SendBuf, Size);
         }
         else
         {
@@ -42,7 +42,7 @@ void Task_UART_Send(void *argument)
 
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
-    if (huart->Instance == USART2)
+    if (huart->Instance == USART1)
     {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;
         xQueueSendToBackFromISR(UART_Receive_SizeHandle, &Size, &xHigherPriorityTaskWoken);
@@ -52,7 +52,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
-    if (huart->Instance == USART2)
+    if (huart->Instance == USART1)
     {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;
         xSemaphoreGiveFromISR(UART_DMA_LockHandle, &xHigherPriorityTaskWoken);
