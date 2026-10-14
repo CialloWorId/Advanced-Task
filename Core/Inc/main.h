@@ -48,6 +48,8 @@ extern "C" {
 extern osMessageQueueId_t UART_Receive_SizeHandle;
 extern osSemaphoreId_t I2C1_DMA_LockHandle;
 extern osSemaphoreId_t UART_DMA_LockHandle;
+extern osSemaphoreId_t I2C2_IT_LockHandle;
+extern osSemaphoreId_t RawDataReadyHandle;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

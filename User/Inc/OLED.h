@@ -4,7 +4,7 @@
 #include "i2c.h"
 #include "OLED_D.h"
 
-#define DEV_ADDRESS 0x3C
+#define OLED_DEVADDRESS 0x3C
 
 void OLED_Init();
 void OLED_ShowChar(uint8_t Line, uint8_t Column, char Char);

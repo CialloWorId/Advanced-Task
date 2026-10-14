@@ -11,7 +11,7 @@ void OLED_WriteCommand(uint8_t Command)
     static uint8_t Command_Package[2] = {0x00, 0x00};
     xSemaphoreTake(I2C1_DMA_LockHandle, portMAX_DELAY);
     Command_Package[1] = Command;
-    HAL_I2C_Master_Transmit_DMA(&hi2c1, (DEV_ADDRESS << 1), Command_Package, 2);
+    HAL_I2C_Master_Transmit_DMA(&hi2c1, (OLED_DEVADDRESS << 1), Command_Package, 2);
 }
 
 /**
@@ -24,7 +24,7 @@ void OLED_WriteData(uint8_t Data)
     static uint8_t Data_Package[2] = {0x40, 0x00};
     xSemaphoreTake(I2C1_DMA_LockHandle, portMAX_DELAY);
     Data_Package[1] = Data;
-    HAL_I2C_Master_Transmit_DMA(&hi2c1, (DEV_ADDRESS << 1), Data_Package, 2);
+    HAL_I2C_Master_Transmit_DMA(&hi2c1, (OLED_DEVADDRESS << 1), Data_Package, 2);
 }
 
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
@@ -108,7 +108,7 @@ void OLED_ShowString(uint8_t Line, uint8_t Column, char *String)
 
 void OLED_Init()
 {
-	HAL_Delay(100);			//上电延时
+	HAL_Delay(100);				//上电延时
 	
 	OLED_WriteCommand(0xAE);	//关闭显示
 	
