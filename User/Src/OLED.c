@@ -1,6 +1,9 @@
 #include "main.h"
 #include "OLED.h"
 
+#define OLED_DEVADDRESS 0x3C	//从机地址
+#define OLED_REFRESHRATE 50		//屏幕刷新率
+
  /**
   * @brief  OLED写命令
   * @param  Command 要写入的命令
@@ -9,7 +12,7 @@
 void OLED_WriteCommand(uint8_t Command)
 {
     static uint8_t Command_Package[2] = {0x00, 0x00};
-    xSemaphoreTake(I2C1_DMA_LockHandle, portMAX_DELAY);
+    xSemaphoreTake(I2C1_DMA_LockHandle, portMAX_DELAY);		//等待上次I2C DMA发送完成，并在下次I2C DMA发送前上锁
     Command_Package[1] = Command;
     HAL_I2C_Master_Transmit_DMA(&hi2c1, (OLED_DEVADDRESS << 1), Command_Package, 2);
 }
@@ -22,11 +25,16 @@ void OLED_WriteCommand(uint8_t Command)
 void OLED_WriteData(uint8_t Data)
 {
     static uint8_t Data_Package[2] = {0x40, 0x00};
-    xSemaphoreTake(I2C1_DMA_LockHandle, portMAX_DELAY);
+    xSemaphoreTake(I2C1_DMA_LockHandle, portMAX_DELAY);		//等待上次I2C DMA发送完成，并在下次I2C DMA发送前上锁
     Data_Package[1] = Data;
     HAL_I2C_Master_Transmit_DMA(&hi2c1, (OLED_DEVADDRESS << 1), Data_Package, 2);
 }
 
+/**
+ * @brief  I2C DMA发送完成解锁
+ * @param  hi2c I2C外设句柄指针
+ * @retval 无
+ */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
     if (hi2c->Instance == I2C1)
@@ -39,8 +47,8 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 
 /**
   * @brief  OLED设置光标位置
-  * @param  Y 以左上角为原点，向下方向的坐标，范围：0~7
-  * @param  X 以左上角为原点，向右方向的坐标，范围：0~127
+  * @param  Y 以左上角为原点，向下方向的坐标，范围：0-7
+  * @param  X 以左上角为原点，向右方向的坐标，范围：0-127
   * @retval 无
   */
 void OLED_SetCursor(uint8_t Y, uint8_t X)
@@ -57,11 +65,10 @@ void OLED_SetCursor(uint8_t Y, uint8_t X)
   */
 void OLED_Clear(void)
 {  
-	uint8_t i, j;
-	for (j = 0; j < 8; j++)
+	for (uint8_t j = 0; j < 8; j++)
 	{
 		OLED_SetCursor(j, 0);
-		for(i = 0; i < 128; i++)
+		for(uint8_t i = 0; i < 128; i++)
 		{
 			OLED_WriteData(0x00);
 		}
@@ -70,12 +77,12 @@ void OLED_Clear(void)
 
 /**
   * @brief  OLED显示一个字符
-  * @param  Line 行位置，范围：1~4
-  * @param  Column 列位置，范围：1~16
+  * @param  Line 行位置，范围：1-4
+  * @param  Column 列位置，范围：1-16
   * @param  Char 要显示的一个字符，范围：ASCII可见字符
   * @retval 无
   */
-void OLED_ShowChar(uint8_t Line, uint8_t Column, char Char)
+void OLED_ShowChar(uint8_t Line, uint8_t Column, uint8_t Char)
 {      	
 	uint8_t i;
 	OLED_SetCursor((Line - 1) * 2, (Column - 1) * 8);		//设置光标位置在上半部分
@@ -92,20 +99,114 @@ void OLED_ShowChar(uint8_t Line, uint8_t Column, char Char)
 
 /**
   * @brief  OLED显示字符串
-  * @param  Line 起始行位置，范围：1~4
-  * @param  Column 起始列位置，范围：1~16
+  * @param  Line 起始行位置，范围：1-4
+  * @param  Column 起始列位置，范围：1-16
   * @param  String 要显示的字符串，范围：ASCII可见字符
   * @retval 无
   */
-void OLED_ShowString(uint8_t Line, uint8_t Column, char *String)
+void OLED_ShowString(uint8_t Line, uint8_t Column, uint8_t *String)
 {
-	uint8_t i;
-	for (i = 0; String[i] != '\0'; i++)
+	for (uint8_t i = 0; String[i] != '\0'; i++)
 	{
 		OLED_ShowChar(Line, Column + i, String[i]);
 	}
 }
 
+/**
+ * @brief  OLED显示欧拉角
+ * @param  Line 要显示的欧拉角的行位置，范围：2-4
+ * @param  Number 要显示的欧拉角
+ * @retval 无
+ */
+void OLED_ShowAngle(uint8_t Line, float Number)
+{
+	float absNumber;
+	uint8_t ShowString[9] = "        ";
+	OLED_ShowString(Line, 9, ShowString);
+	uint8_t Temp, i = 7;
+
+	if (Number < 0)
+	{
+		absNumber = -Number;
+	}
+	else
+	{
+		absNumber = Number;
+	}
+
+	Temp = (uint8_t)((absNumber - (uint8_t)absNumber) * 1000);
+	if (Temp == 0)
+	{
+		ShowString[7] = '0';
+		ShowString[6] = '0';
+		ShowString[5] = '0';
+		i = 4;
+	}
+	while (Temp)
+	{
+		ShowString[i] = Temp % 10 + 48;
+		Temp /= 10;
+		i--;
+	}
+
+	ShowString[i] = '.';
+	i--;
+
+	Temp = (uint8_t)absNumber;
+	if (Temp == 0)
+	{
+		ShowString[i] = '0';
+		i--;
+	}
+	while (Temp)
+	{
+		ShowString[i] = Temp % 10 + 48;
+		Temp /= 10;
+		i--;
+	}
+
+	if (Number > 0)
+	{
+		ShowString[i] = '+';
+		i--;
+	}
+	if (Number < 0)
+	{
+		ShowString[i] = '-';
+		i--;
+	}
+	OLED_ShowString(Line, 9, ShowString);
+}
+
+/**
+ * @brief  OLED屏幕刷新欧拉角数据任务
+ * @note   刷新率50Hz，任务优先级8
+ * @param  无
+ * @retval 无
+ */
+void Task_OLED_ShowData()
+{
+	float Roll, Pitch, Yaw;
+	portTickType pxPreviousWakeTime = xTaskGetTickCount();
+	for(;;)
+	{
+		Roll = EulerAngles.Roll;
+		Pitch = EulerAngles.Pitch;
+		Yaw = EulerAngles.Yaw;
+		
+		OLED_ShowAngle(2, Roll);
+		OLED_ShowAngle(3, Pitch);
+		OLED_ShowAngle(4, Yaw);
+
+		vTaskDelayUntil(&pxPreviousWakeTime, pdMS_TO_TICKS(1000 / OLED_REFRESHRATE));
+	}
+}
+
+/**
+  *@brief  OLED初始化
+  *@param  无
+  *@retval 无
+  */
 void OLED_Init()
 {
 	HAL_Delay(100);				//上电延时

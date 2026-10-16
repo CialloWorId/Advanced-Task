@@ -54,27 +54,6 @@ const osThreadAttr_t Init_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityRealtime,
 };
-/* Definitions for UART_Send */
-osThreadId_t UART_SendHandle;
-const osThreadAttr_t UART_Send_attributes = {
-  .name = "UART_Send",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityAboveNormal,
-};
-/* Definitions for MPU6050_Read */
-osThreadId_t MPU6050_ReadHandle;
-const osThreadAttr_t MPU6050_Read_attributes = {
-  .name = "MPU6050_Read",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
-/* Definitions for MPU6050_Handle */
-osThreadId_t MPU6050_HandleHandle;
-const osThreadAttr_t MPU6050_Handle_attributes = {
-  .name = "MPU6050_Handle",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
 /* Definitions for UART_Receive_Size */
 osMessageQueueId_t UART_Receive_SizeHandle;
 const osMessageQueueAttr_t UART_Receive_Size_attributes = {
@@ -107,9 +86,6 @@ const osSemaphoreAttr_t RawDataReady_attributes = {
 /* USER CODE END FunctionPrototypes */
 
 void Task_Init(void *argument);
-void Task_UART_Send(void *argument);
-void Task_MPU6050_DataUpdate(void *argument);
-void Task_MPU6050_DataHandle(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -160,15 +136,6 @@ void MX_FREERTOS_Init(void) {
   /* creation of Init */
   InitHandle = osThreadNew(Task_Init, NULL, &Init_attributes);
 
-  /* creation of UART_Send */
-  UART_SendHandle = osThreadNew(Task_UART_Send, NULL, &UART_Send_attributes);
-
-  /* creation of MPU6050_Read */
-  MPU6050_ReadHandle = osThreadNew(Task_MPU6050_DataUpdate, NULL, &MPU6050_Read_attributes);
-
-  /* creation of MPU6050_Handle */
-  MPU6050_HandleHandle = osThreadNew(Task_MPU6050_DataHandle, NULL, &MPU6050_Handle_attributes);
-
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -195,60 +162,6 @@ __weak void Task_Init(void *argument)
     osDelay(1);
   }
   /* USER CODE END Task_Init */
-}
-
-/* USER CODE BEGIN Header_Task_UART_Send */
-/**
-* @brief Function implementing the UART_Send thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_Task_UART_Send */
-__weak void Task_UART_Send(void *argument)
-{
-  /* USER CODE BEGIN Task_UART_Send */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END Task_UART_Send */
-}
-
-/* USER CODE BEGIN Header_Task_MPU6050_DataUpdate */
-/**
-* @brief Function implementing the MPU6050_Read thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_Task_MPU6050_DataUpdate */
-__weak void Task_MPU6050_DataUpdate(void *argument)
-{
-  /* USER CODE BEGIN Task_MPU6050_DataUpdate */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END Task_MPU6050_DataUpdate */
-}
-
-/* USER CODE BEGIN Header_Task_MPU6050_DataHandle */
-/**
-* @brief Function implementing the MPU6050_Handle thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_Task_MPU6050_DataHandle */
-__weak void Task_MPU6050_DataHandle(void *argument)
-{
-  /* USER CODE BEGIN Task_MPU6050_DataHandle */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END Task_MPU6050_DataHandle */
 }
 
 /* Private application code --------------------------------------------------*/

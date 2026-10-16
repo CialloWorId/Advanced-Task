@@ -4,12 +4,24 @@
 #include "i2c.h"
 #include "math.h"
 
-#define MPU6050_DEVADDRESS 0x68
-#define PI 3.1415926f
-#define DT  0.005f
-#define DT_MS 5
+/**
+ * @brief  欧拉角
+ * @param  Roll 翻滚角
+ * @param  Pitch 俯仰角
+ * @param  Yaw 偏航角
+ */
+typedef struct
+{
+    float Roll;
+    float Pitch;
+    float Yaw;
+} AngleStruct;
+
+extern AngleStruct EulerAngles;
 
 void MPU6050_Init();
 void MPU6050_Zero();
+void Task_MPU6050_DataUpdate(void *argument);
+void Task_MPU6050_DataHandle(void *argument);
 
 #endif
