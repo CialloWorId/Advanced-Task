@@ -3,6 +3,13 @@
 #include "OLED.h"
 #include "MPU6050.h"
 
+/**
+ * @brief  初始化任务
+ * @note   打开串口DMA、初始化MPU6050和OLED屏幕、对MPU6050的陀螺仪调零并创建工作任务
+ * @note   CubeMX自动生成的默认任务，任务优先级48，防止被打断
+ * @param  无
+ * @retval 无
+ */
 void Task_Init(void *argument)
 {
     HAL_UARTEx_ReceiveToIdle_DMA(&huart1, ReceiveBuf, UART_BUFFER_LENGTH);

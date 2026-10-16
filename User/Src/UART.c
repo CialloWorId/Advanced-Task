@@ -42,7 +42,7 @@ void Task_UART_Send(void *argument)
         }
         else
         {
-            xSemaphoreGive(UART_DMA_LockHandle);
+            xSemaphoreGive(UART_DMA_LockHandle);    //若未检测到\n判断未接收完成，解锁继续接收
         }
     }
 }
